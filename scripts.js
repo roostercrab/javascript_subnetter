@@ -32,6 +32,23 @@ function calculateSubnet() {
   // parse the numeric ip address array to an array of binary equivalents
   for (let octet = 0; octet < numeric_ip_array.length; octet++) {
     let current_octet = numeric_ip_array[octet].toString(2)
+    // handle binary that isn't 8 bits
+    if (current_octet.length < 8) {
+      const offset = 8 - current_octet.length
+      let add_on_zeroes_list = []
+      for (let index = 0; index < offset; index++) {
+        add_on_zeroes_list.push(0)
+      }
+      add_on_zeroes_string = add_on_zeroes_list.toString().split(',').join('')
+      current_octet = add_on_zeroes_string + current_octet
+    }
+    binary_ip_array.push(current_octet)
+  }
+
+  // parse the numeric mask array to an array of binary equivalents
+  for (let octet = 0; octet < numeric_mask_array.length; octet++) {
+    let current_octet = numeric_mask_array[octet].toString(2)
+    // handle binary that isn't 8 bits
     if (current_octet.length < 8) {
       const offset = 8 - current_octet.length
       let add_on_zeroes_list = []
@@ -43,12 +60,6 @@ function calculateSubnet() {
       console.log(add_on_zeroes_string)
       current_octet = add_on_zeroes_string + current_octet
     }
-    binary_ip_array.push(current_octet)
-  }
-
-  // parse the numeric mask array to an array of binary equivalents
-  for (let octet = 0; octet < numeric_mask_array.length; octet++) {
-    let current_octet = numeric_mask_array[octet].toString(2)
     binary_mask_array.push(current_octet)
   }
 
