@@ -9,8 +9,8 @@ function calculateSubnet() {
   // split the input ip and mask into an array based on the "."
   const input_ip_array = ip.split('.')
   const input_mask_array = mask.split('.')
-  console.log(input_ip_array)
-  console.log(input_mask_array)
+  //console.log(input_ip_array)
+  //console.log(input_mask_array)
 
   let numeric_ip_array = []
   let numeric_mask_array = []
@@ -62,16 +62,24 @@ function calculateSubnet() {
   }
 
   // calculate the subnet value
+  binary_ip_string = binary_ip_array.toString().split(',').join('')
+  binary_mask_string = binary_mask_array.toString().split(',').join('')
+  decimal_ip_number = parseInt(binary_ip_string, 2)
+  decimal_mask_number = parseInt(binary_mask_string, 2)
+  decimal_subnet_number = decimal_ip_number & decimal_mask_number
+  binary_subnet_number = decimal_subnet_number.toString(2)
 
   // console log the real values for diagnostics
-  console.log(numeric_ip_array)
-  console.log(numeric_mask_array)
-  console.log(binary_ip_array.toString().split(',').join(''))
-  console.log(binary_mask_array.toString().split(',').join(''))
+  console.log(binary_ip_string)
+  console.log(binary_mask_string)
+  console.log(decimal_ip_number)
+  console.log(decimal_mask_number)
+  console.log(decimal_subnet_number)
+  console.log(binary_subnet_number)
 
   // display the values to the webpage output (will be used for final calculation...eventually)
-  subnet.value = numeric_ip_array
-  broadcast.value = numeric_mask_array
-  binary_ip.value = binary_ip_array.toString().split(',').join('')
-  binary_mask.value = binary_mask_array.toString().split(',').join('')
+  subnet.value = 0
+  broadcast.value = 0
+  binary_ip.value = binary_ip_string
+  binary_mask.value = binary_mask_string
 }
