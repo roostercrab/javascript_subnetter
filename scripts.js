@@ -54,24 +54,24 @@ function calculateSubnet() {
       let add_on_zeroes_list = []
       for (let index = 0; index < offset; index++) {
         add_on_zeroes_list.push(0)
-        console.log(add_on_zeroes_list)
       }
       add_on_zeroes_string = add_on_zeroes_list.toString().split(',').join('')
-      console.log(add_on_zeroes_string)
       current_octet = add_on_zeroes_string + current_octet
     }
     binary_mask_array.push(current_octet)
   }
 
-  // console.log the real values for diagnostics
+  // calculate the subnet value
+
+  // console log the real values for diagnostics
   console.log(numeric_ip_array)
   console.log(numeric_mask_array)
-  console.log(binary_ip_array.join())
-  console.log(binary_mask_array)
+  console.log(binary_ip_array.toString().split(',').join(''))
+  console.log(binary_mask_array.toString().split(',').join(''))
 
   // display the values to the webpage output (will be used for final calculation...eventually)
-  binary_ip.value = binary_ip_array.toString().split(',').join('')
-  binary_mask.value = binary_mask_array.toString().split(',').join('')
   subnet.value = numeric_ip_array
   broadcast.value = numeric_mask_array
+  binary_ip.value = binary_ip_array.toString().split(',').join('')
+  binary_mask.value = binary_mask_array.toString().split(',').join('')
 }
