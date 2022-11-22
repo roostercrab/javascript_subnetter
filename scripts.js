@@ -1,4 +1,5 @@
-function calculateSubnet() {
+function calculateSubnet()
+{
   const ip = document.getElementById('ip').value
   const mask = document.getElementById('mask').value
   const binary_ip = document.getElementById('binary_ip')
@@ -16,6 +17,16 @@ function calculateSubnet() {
   let numeric_mask_array = []
   let binary_ip_array = []
   let binary_mask_array = []
+
+  let numeric_broadcast_array = []
+  let binary_subnet_array = []
+  let binary_broadcast_array = []
+
+
+  function array_to_dotted_decimal(array_of_values)
+  {
+
+  }
 
   // parse the input ip address to an array of numbers
   for (let octet = 0; octet < input_ip_array.length; octet++) {
@@ -61,7 +72,7 @@ function calculateSubnet() {
     binary_mask_array.push(current_octet)
   }
 
-  // calculate the subnet value
+  // calculate some values
   binary_ip_string = binary_ip_array.toString().split(',').join('')
   binary_mask_string = binary_mask_array.toString().split(',').join('')
   decimal_ip_number = parseInt(binary_ip_string, 2)
@@ -69,17 +80,63 @@ function calculateSubnet() {
   decimal_subnet_number = decimal_ip_number & decimal_mask_number
   binary_subnet_number = decimal_subnet_number.toString(2)
 
+  // calculate the subnet value 2
+  // figure out which mask octet is "magic"
+  magic_octet_index = -1
+  interval = -1
+  for (let index = 0; index < numeric_mask_array.length; index++) {
+    const octet = numeric_mask_array[index];
+    if (octet === 255) {
+      continue
+    } else {
+      magic_octet_index = index
+      interval = 256 - octet
+      break
+    }
+  }
+
+  // grab the value from the numeric ip array in the magic octet
+  magic_octet_ip_value = numeric_ip_array[magic_octet_index]
+
+  // divide the interval into the corresponding octet of the ip address until it goes over for the subnet address
+  test_interval = 0
+  subnet_number = 0
+  numeric_subnet_array = numeric_ip_array
+  if (interval === 256) {
+    subnet_number = 0
+  } else {
+    while (magic_octet_ip_value >= test_interval) {
+      test_interval += interval
+      console.log(test_interval)
+    }
+    subnet_number = test_interval - interval
+    // have to do that because it's not ending on the value before it becomes to large...
+  }
+
+  numeric_subnet_array[magic_octet_index] = subnet_number
+
+  // zero out the remaining octets
+  // grab the ip array and starting from the magic octet index, add one and zero each subsequent octet
+  for (let index = magic_octet_index + 1; index < numeric_subnet_array.length; index++) {
+    numeric_subnet_array[index] = 0;
+  }
+  console.log(numeric_subnet_array)
+
+  // add the interval - 1 to the relevant ip address for the broadcast address
+  // 255 out the remaining octets
+  // then need to convert them both to binary, should pull the function out of the code that's doing it twice
+
   // console log the real values for diagnostics
-  console.log(binary_ip_string)
-  console.log(binary_mask_string)
-  console.log(decimal_ip_number)
-  console.log(decimal_mask_number)
-  console.log(decimal_subnet_number)
-  console.log(binary_subnet_number)
+  // console.log(binary_ip_string)
+  // console.log(binary_mask_string)
+  // console.log(decimal_ip_number)
+  // console.log(decimal_mask_number)
+  // console.log(decimal_subnet_number)
+  // console.log(binary_subnet_number)
 
   // display the values to the webpage output (will be used for final calculation...eventually)
-  subnet.value = 0
-  broadcast.value = 0
+  subnet.value = '-'
+  broadcast.value = '-'
   binary_ip.value = binary_ip_string
   binary_mask.value = binary_mask_string
 }
