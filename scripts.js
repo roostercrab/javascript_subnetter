@@ -22,9 +22,12 @@ function calculateSubnet()
   let binary_subnet_array = []
   let binary_broadcast_array = []
 
-  function input_to_array(input_array)
+  function input_to_array(user_input_array, output_numeric_array)
   {
-
+    for (let octet = 0; octet < user_input_array.length; octet++) {
+      let current_octet = parseInt(user_input_array[octet])
+      output_numeric_array.push(current_octet)
+    }
   }
 
   function numeric_array_to_binary(numeric_array, binary_output_array)
@@ -45,32 +48,16 @@ function calculateSubnet()
     }
   }
 
-  // parse the input ip address to an array of numbers
-  for (let octet = 0; octet < input_ip_array.length; octet++) {
-    let current_octet = parseInt(input_ip_array[octet])
-    numeric_ip_array.push(current_octet)
-  }
 
+  // parse the input ip address to an array of numbers
+  input_to_array(input_ip_array, numeric_ip_array)
   // parse the input mask to an array of numbers
-  for (let octet = 0; octet < input_mask_array.length; octet++) {
-    let current_octet = parseInt(input_mask_array[octet])
-    numeric_mask_array.push(current_octet)
-  }
+  input_to_array(input_mask_array, numeric_mask_array)
 
   // parse the numeric ip address array to an array of binary equivalents
   numeric_array_to_binary(numeric_ip_array, binary_ip_array)
-
   // parse the numeric mask array to an array of binary equivalents
   numeric_array_to_binary(numeric_mask_array, binary_mask_array)
-
-
-  // calculate some values
-  binary_ip_string = binary_ip_array.toString().split(',').join('')
-  binary_mask_string = binary_mask_array.toString().split(',').join('')
-  decimal_ip_number = parseInt(binary_ip_string, 2)
-  decimal_mask_number = parseInt(binary_mask_string, 2)
-  decimal_subnet_number = decimal_ip_number & decimal_mask_number
-  binary_subnet_number = decimal_subnet_number.toString(2)
 
   // calculate the subnet value 2
   // figure out which mask octet is "magic"
@@ -118,13 +105,14 @@ function calculateSubnet()
   // 255 out the remaining octets
   // then need to convert them both to binary, should pull the function out of the code that's doing it twice
 
-  // console log the real values for diagnostics
-  // console.log(binary_ip_string)
-  // console.log(binary_mask_string)
-  // console.log(decimal_ip_number)
-  // console.log(decimal_mask_number)
-  // console.log(decimal_subnet_number)
-  // console.log(binary_subnet_number)
+
+  // calculate some values
+  binary_ip_string = binary_ip_array.toString().split(',').join('')
+  binary_mask_string = binary_mask_array.toString().split(',').join('')
+  decimal_ip_number = parseInt(binary_ip_string, 2)
+  decimal_mask_number = parseInt(binary_mask_string, 2)
+  decimal_subnet_number = decimal_ip_number & decimal_mask_number
+  binary_subnet_number = decimal_subnet_number.toString(2)
 
   // display the values to the webpage output (will be used for final calculation...eventually)
   subnet.value = '-'
