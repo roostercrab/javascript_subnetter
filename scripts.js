@@ -22,10 +22,27 @@ function calculateSubnet()
   let binary_subnet_array = []
   let binary_broadcast_array = []
 
-
-  function array_to_dotted_decimal(array_of_values)
+  function input_to_array(input_array)
   {
 
+  }
+
+  function numeric_array_to_binary(numeric_array, binary_output_array)
+  {
+    for (let octet = 0; octet < numeric_array.length; octet++) {
+      let current_octet = numeric_array[octet].toString(2)
+      // handle binary that isn't 8 bits
+      if (current_octet.length < 8) {
+        const offset = 8 - current_octet.length
+        let add_on_zeroes_list = []
+        for (let index = 0; index < offset; index++) {
+          add_on_zeroes_list.push(0)
+        }
+        add_on_zeroes_string = add_on_zeroes_list.toString().split(',').join('')
+        current_octet = add_on_zeroes_string + current_octet
+      }
+      binary_output_array.push(current_octet)
+    }
   }
 
   // parse the input ip address to an array of numbers
@@ -41,36 +58,11 @@ function calculateSubnet()
   }
 
   // parse the numeric ip address array to an array of binary equivalents
-  for (let octet = 0; octet < numeric_ip_array.length; octet++) {
-    let current_octet = numeric_ip_array[octet].toString(2)
-    // handle binary that isn't 8 bits
-    if (current_octet.length < 8) {
-      const offset = 8 - current_octet.length
-      let add_on_zeroes_list = []
-      for (let index = 0; index < offset; index++) {
-        add_on_zeroes_list.push(0)
-      }
-      add_on_zeroes_string = add_on_zeroes_list.toString().split(',').join('')
-      current_octet = add_on_zeroes_string + current_octet
-    }
-    binary_ip_array.push(current_octet)
-  }
+  numeric_array_to_binary(numeric_ip_array, binary_ip_array)
 
   // parse the numeric mask array to an array of binary equivalents
-  for (let octet = 0; octet < numeric_mask_array.length; octet++) {
-    let current_octet = numeric_mask_array[octet].toString(2)
-    // handle binary that isn't 8 bits
-    if (current_octet.length < 8) {
-      const offset = 8 - current_octet.length
-      let add_on_zeroes_list = []
-      for (let index = 0; index < offset; index++) {
-        add_on_zeroes_list.push(0)
-      }
-      add_on_zeroes_string = add_on_zeroes_list.toString().split(',').join('')
-      current_octet = add_on_zeroes_string + current_octet
-    }
-    binary_mask_array.push(current_octet)
-  }
+  numeric_array_to_binary(numeric_mask_array, binary_mask_array)
+
 
   // calculate some values
   binary_ip_string = binary_ip_array.toString().split(',').join('')
