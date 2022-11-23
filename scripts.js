@@ -6,6 +6,8 @@ function calculateSubnet()
   const binary_mask = document.getElementById('binary_mask')
   const subnet = document.getElementById('subnet')
   const broadcast = document.getElementById('broadcast')
+  const binary_subnet = document.getElementById('binary_subnet')
+  const binary_broadcast = document.getElementById('binary_broadcast')
 
   // split the input ip and mask into an array based on the "."
   const input_ip_array = ip.split('.')
@@ -17,12 +19,12 @@ function calculateSubnet()
   let numeric_mask_array = []
   let binary_ip_array = []
   let binary_mask_array = []
-
+  let numeric_subnet_array = []
   let numeric_broadcast_array = []
   let binary_subnet_array = []
   let binary_broadcast_array = []
 
-  function input_to_array(user_input_array, output_numeric_array)
+  function dotted_decimal_input_to_array(user_input_array, output_numeric_array)
   {
     for (let octet = 0; octet < user_input_array.length; octet++) {
       let current_octet = parseInt(user_input_array[octet])
@@ -50,9 +52,9 @@ function calculateSubnet()
 
 
   // parse the input ip address to an array of numbers
-  input_to_array(input_ip_array, numeric_ip_array)
+  dotted_decimal_input_to_array(input_ip_array, numeric_ip_array)
   // parse the input mask to an array of numbers
-  input_to_array(input_mask_array, numeric_mask_array)
+  dotted_decimal_input_to_array(input_mask_array, numeric_mask_array)
 
   // parse the numeric ip address array to an array of binary equivalents
   numeric_array_to_binary(numeric_ip_array, binary_ip_array)
@@ -80,7 +82,7 @@ function calculateSubnet()
   // divide the interval into the corresponding octet of the ip address until it goes over for the subnet address
   test_interval = 0
   subnet_number = 0
-  numeric_subnet_array = numeric_ip_array
+  numeric_subnet_array = [...numeric_ip_array]
   if (interval === 256) {
     subnet_number = 0
   } else {
@@ -94,29 +96,44 @@ function calculateSubnet()
 
   numeric_subnet_array[magic_octet_index] = subnet_number
 
-  // zero out the remaining octets
-  // grab the ip array and starting from the magic octet index, add one and zero each subsequent octet
+  // grab the subnet array and starting from the magic octet index, add one and zero each subsequent octet
   for (let index = magic_octet_index + 1; index < numeric_subnet_array.length; index++) {
     numeric_subnet_array[index] = 0;
   }
-  console.log(numeric_subnet_array)
 
-  // add the interval - 1 to the relevant ip address for the broadcast address
+  // add the interval - 1 to the magic subnet address for the broadcast address
+  numeric_broadcast_array = [...numeric_subnet_array]
+  numeric_broadcast_array[magic_octet_index] = subnet_number + (interval - 1)
   // 255 out the remaining octets
+  for (let index = magic_octet_index + 1; index < numeric_broadcast_array.length; index++) {
+    numeric_broadcast_array[index] = 255;
+  }
   // then need to convert them both to binary, should pull the function out of the code that's doing it twice
+  numeric_array_to_binary(numeric_subnet_array, binary_subnet_array)
+  numeric_array_to_binary(numeric_broadcast_array, binary_broadcast_array)
 
+  console.log(binary_subnet_array)
+  console.log(binary_broadcast_array)
 
   // calculate some values
+  subnet_string = numeric_subnet_array.toString().split(',').join('.')
+  broadcast_string = numeric_broadcast_array.toString().split(',').join('.')
   binary_ip_string = binary_ip_array.toString().split(',').join('')
   binary_mask_string = binary_mask_array.toString().split(',').join('')
+  binary_subnet_string = binary_subnet_array.toString().split(',').join('')
+  binary_broadcast_string = binary_broadcast_array.toString().split(',').join('')
+
+  // these might not get used and the last two aren't configured right anyway...
   decimal_ip_number = parseInt(binary_ip_string, 2)
   decimal_mask_number = parseInt(binary_mask_string, 2)
   decimal_subnet_number = decimal_ip_number & decimal_mask_number
   binary_subnet_number = decimal_subnet_number.toString(2)
 
   // display the values to the webpage output (will be used for final calculation...eventually)
-  subnet.value = '-'
-  broadcast.value = '-'
+  subnet.value = subnet_string
+  broadcast.value = broadcast_string
   binary_ip.value = binary_ip_string
   binary_mask.value = binary_mask_string
+  binary_subnet.value = binary_subnet_string
+  binary_broadcast.value = binary_broadcast_string
 }
